@@ -1,10 +1,10 @@
 {
-    "name": "GenericAzureIoTHub",
+    "name": "Azure-IoTHub-Generic",
     "keywords": "Azure, mqtt, hub, iot, iothub, esp",
     "description": "Provides generic access to the Azure IoT Hub",
     "repository": {
         "type": "git",
-        "url": "https://github.com/sandervandevelde/Azure-iothub-mqtt-esp8266.git"
+        "url": "https://github.com/sandervandevelde/Azure-iothub-generic-esp8266.git"
     },
     "version": "1.0",
     "exclude": "doc",
