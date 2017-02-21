@@ -12,7 +12,7 @@ This library supports a more generic access to Azure IoT Hub:
 4. Compile and upload the sketch to your device
 5. After uploading, open the serial monitor and see how messages are sent
 
-    ![alt tag](img/img01.png)
+    ![alt tag](img/img02.png)
 
 6. In the IoTHub Device Explorer, the messages are picked up
 
@@ -20,9 +20,15 @@ This library supports a more generic access to Azure IoT Hub:
 
 7. Try to send commands using the IoTHub Device Explorer. Send a '!' or a '0'
 
-    ![alt tag](img/img02.png)
+    ![alt tag](img/img01.png)
 	
 Now you are sending telemetry and receiving commands.
+	
+*Referenced Json libraries*	
+	
+The example sketch in this library is referencing 'ArduinoJson.h'.
+	
+*License*	
 	
 This code is released under the MIT License.
 
