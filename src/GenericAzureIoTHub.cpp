@@ -1,18 +1,18 @@
-#include "AzureIoTHub.h"
+#include "GenericAzureIoTHub.h"
 
 CloudConfig cloud;
 
 WiFiClientSecure espClient;
 PubSubClient mqtt(espClient);
 
-GeneralFunction AzureIoTHub::az;
+GeneralFunction GenericAzureIoTHub::az;
 
-void AzureIoTHub::callback(char * topic, byte * payload, unsigned int length)
+void GenericAzureIoTHub::callback(char * topic, byte * payload, unsigned int length)
 {
 	az(payload, length);
 }
 
-void AzureIoTHub::begin(String cs){
+void GenericAzureIoTHub::begin(String cs){
 	cloud.host = GetStringValue(splitStringByIndex(splitStringByIndex(cs, ';', 0), '=', 1));
 	cloud.id = GetStringValue(splitStringByIndex(splitStringByIndex(cs, ';', 1), '=', 1));
 	cloud.key = (char*)GetStringValue(splitStringByIndex(splitStringByIndex(cs, ';', 2), '=', 1));
@@ -23,15 +23,15 @@ void AzureIoTHub::begin(String cs){
 	mqtt.setServer(cloud.host, 8883);
 }
 
- void AzureIoTHub::setCallback(GeneralFunction _az){
+ void GenericAzureIoTHub::setCallback(GeneralFunction _az){
 	 mqtt.setCallback(this->callback);
 	 az = _az;
  }
-bool AzureIoTHub::push(char *data){
+bool GenericAzureIoTHub::push(char *data){
 		mqtt.publish(cloud.postUrl, data);
 }
 
-bool AzureIoTHub::connect()
+bool GenericAzureIoTHub::connect()
 {
 	while (!mqtt.connected()) {
 		Serial.print(F("Attempting MQTT connection..."));
@@ -51,14 +51,14 @@ bool AzureIoTHub::connect()
 	mqtt.loop();
 }
 
-const char * AzureIoTHub::GetStringValue(String value){
+const char * GenericAzureIoTHub::GetStringValue(String value){
 	int len = value.length() + 1;
 	char *temp = new char[len];
 	value.toCharArray(temp, len);
 	return temp;
 }
 
-String AzureIoTHub::splitStringByIndex(String data, char separator, int index){
+String GenericAzureIoTHub::splitStringByIndex(String data, char separator, int index){
 	int found = 0;
 	int strIndex[] = { 0, -1 };
 	int maxIndex = data.length() - 1;
@@ -73,7 +73,7 @@ String AzureIoTHub::splitStringByIndex(String data, char separator, int index){
 	return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
-String AzureIoTHub::urlEncode(const char * msg){
+String GenericAzureIoTHub::urlEncode(const char * msg){
 	const char *hex = "0123456789abcdef";
 	String encodedMsg = "";
 
@@ -93,7 +93,7 @@ String AzureIoTHub::urlEncode(const char * msg){
 	return encodedMsg;
 }
 
-String AzureIoTHub::createIotHubSas(char * key, String url)
+String GenericAzureIoTHub::createIotHubSas(char * key, String url)
 {
 	String stringToSign = url + "\n" + cloud.sasExpiryDate;
 
@@ -122,4 +122,4 @@ String AzureIoTHub::createIotHubSas(char * key, String url)
 	// END: create SAS  
 }
 
-AzureIoTHub Azure;
+GenericAzureIoTHub Azure;

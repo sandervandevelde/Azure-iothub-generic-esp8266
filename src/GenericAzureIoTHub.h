@@ -1,6 +1,6 @@
 
-#ifndef AzureIoTHub_h
-#define AzureIoTHub_h
+#ifndef GenericAzureIoTHub_h
+#define GenericAzureIoTHub_h
 #include <WiFiClientSecure.h>
 #include "sha256.h"
 #include "Base64.h"
@@ -45,5 +45,5 @@ private:
 		createIotHubSas(char *key, String url);
 };
 
-extern AzureIoTHub Azure;
+extern GenericAzureIoTHub Azure;
 #endif

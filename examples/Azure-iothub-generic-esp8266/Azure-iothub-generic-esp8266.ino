@@ -1,4 +1,4 @@
-#include <AzureIoTHub.h>
+#include <GenericAzureIoTHub.h>
 
 #include <ArduinoJson.h>
 
