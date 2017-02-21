@@ -28,7 +28,7 @@ struct CloudConfig {
 
 typedef void(*GeneralFunction) (const byte* payload, int length);
 
-class AzureIoTHub
+class GenericAzureIoTHub
 {
 public:
 	int senddata = 0;
