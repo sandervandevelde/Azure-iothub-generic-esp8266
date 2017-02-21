@@ -5,13 +5,12 @@
 #include "sha256.h"
 #include "Base64.h"
 #include <ESP8266WiFi.h>
-#include "aJson/aJSON.h"
 #include "pubsubclient/PubSubClient.h"
+
 enum CloudMode {
 	IoTHub,
 	EventHub
 };
-
 
 struct CloudConfig {
 	CloudMode cloudMode = IoTHub;
@@ -27,32 +26,14 @@ struct CloudConfig {
 	const char * getUrl;
 };
 
-class DataElement {
-public:
-	DataElement();
-	DataElement(char *json_string);
-	~DataElement();
-	void setValue(const char *key, const char *v);
-	void setValue(const char *key, int v);
-	void setValue(const char *key, double v);
-	char *toCharArray();
-	char *getString(const char *key);
-	int getInt(const char *key);
-	float getFloat(const char *key);
-
-private:
-	aJsonObject *params;
-	aJsonObject *paJsonObj;
-};
-
-typedef void(*GeneralFunction) (String AzureData);
+typedef void(*GeneralFunction) (const byte* payload, int length);
 
 class AzureIoTHub
 {
 public:
 	int senddata = 0;
 	bool connect(),
-		push(DataElement *data);
+		push(char *data);
 	void begin(String cs);
 	void setCallback(GeneralFunction _az);
 private:

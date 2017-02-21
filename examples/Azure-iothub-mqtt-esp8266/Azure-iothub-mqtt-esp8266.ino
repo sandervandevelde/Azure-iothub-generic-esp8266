@@ -1,5 +1,7 @@
 #include <AzureIoTHub.h>
 
+#include <ArduinoJson.h>
+
 void setup() {
   Serial.begin(115200);
   WiFi.begin("SSID", "PASS");
@@ -7,18 +9,34 @@ void setup() {
   Azure.setCallback(azureCallback);
 }
 
-void azureCallback(String s) {
-  Serial.print("azure Message arrived [");
-  Serial.print(s);
-  Serial.println("] ");
+void azureCallback(const byte* payload, int length) {
+  if (length > 0) {
+    int command = payload[0];
+
+    if (command >= 42) {
+      Serial.println("Machine repaired...");
+    }
+    else {
+      Serial.println("Machine not repaired...");
+    }
+  }
 }
 
 void loop() {
   if (WiFi.status() == WL_CONNECTED) {
     Azure.connect();
-    DataElement a = DataElement();
-    a.setValue("EspAnalog", analogRead(A0));
-    Azure.push(&a);
+
+    StaticJsonBuffer<256> jsonBuffer;
+
+    JsonObject& root = jsonBuffer.createObject();
+    root["sensor"] = "sensor1";
+    root["value"] = 42;
+
+    char buffer[256];
+    root.printTo(buffer, sizeof(buffer));
+
+    Azure.push(buffer);
+    
     Serial.println("pushed");
     delay(2000);
   } else {
@@ -26,6 +44,5 @@ void loop() {
     delay(250);
   }
 }
-
 
 

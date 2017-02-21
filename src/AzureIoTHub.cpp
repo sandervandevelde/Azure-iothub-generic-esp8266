@@ -1,7 +1,5 @@
 #include "AzureIoTHub.h"
 
-WiFiClientSecure tlsClient;
-
 CloudConfig cloud;
 
 WiFiClientSecure espClient;
@@ -11,9 +9,7 @@ GeneralFunction AzureIoTHub::az;
 
 void AzureIoTHub::callback(char * topic, byte * payload, unsigned int length)
 {
-	String _azuredata;
-	for (int i = 0; i < length; i++)_azuredata += (char)payload[i];
-	az(_azuredata);
+	az(payload, length);
 }
 
 void AzureIoTHub::begin(String cs){
@@ -28,24 +24,21 @@ void AzureIoTHub::begin(String cs){
 }
 
  void AzureIoTHub::setCallback(GeneralFunction _az){
-	 mqtt.setCallback(this->callback);//Azureからのデータを受けた時コールバックする
+	 mqtt.setCallback(this->callback);
 	 az = _az;
  }
-bool AzureIoTHub::push(DataElement *data){
-	char* sendData = data->toCharArray();
-	mqtt.publish(cloud.postUrl, sendData);
-	free(sendData);
+bool AzureIoTHub::push(char *data){
+		mqtt.publish(cloud.postUrl, data);
 }
 
 bool AzureIoTHub::connect()
 {
-	
 	while (!mqtt.connected()) {
 		Serial.print(F("Attempting MQTT connection..."));
 		if (mqtt.connect(cloud.id, cloud.hubUser, cloud.fullSas)) {
 			Serial.println(F("connected"));
 			// ... and resubscribe
-			mqtt.subscribe(cloud.getUrl);//Azureからのデータを監視する
+			mqtt.subscribe(cloud.getUrl);
 		}
 		else {
 			Serial.print(F("failed, rc="));
@@ -127,70 +120,6 @@ String AzureIoTHub::createIotHubSas(char * key, String url)
 	// SharedAccessSignature
 	return "SharedAccessSignature sr=" + url + "&sig=" + urlEncode(encodedSign) + "&se=" + cloud.sasExpiryDate;
 	// END: create SAS  
-}
-
-
-DataElement::DataElement() {
-	params = aJson.createObject();
-	paJsonObj = aJson.createObject();
-	aJson.addItemToObject(paJsonObj, "params", params);
-	aJson.addStringToObject(paJsonObj, "Dev", cloud.id);
-	aJson.addNumberToObject(paJsonObj, "Id",++(Azure.senddata));
-}
-
-DataElement::DataElement(char *json_string) {
-	paJsonObj = aJson.parse(json_string);
-	params = aJson.getObjectItem(paJsonObj, "params");
-}
-
-DataElement::~DataElement() {
-	aJson.deleteItem(paJsonObj);
-	paJsonObj = NULL;
-	params = NULL;
-}
-
-void DataElement::setValue(const char *key, const char *v) {
-	aJson.addStringToObject(params, key, v);
-}
-
-void DataElement::setValue(const char *key, int v) {
-	aJson.addNumberToObject(params, key, v);
-}
-
-void DataElement::setValue(const char *key, double v) {
-	aJson.addNumberToObject(params, key, v);
-}
-
-char *DataElement::getString(const char *key) {
-	aJsonObject* obj = aJson.getObjectItem(params, key);
-	if (obj == NULL) {
-		Serial.println("obj is NULL");
-		return (char*)"";
-	}
-	return obj->valuestring;
-}
-
-int DataElement::getInt(const char *key) {
-	aJsonObject* obj = aJson.getObjectItem(params, key);
-	if (obj == NULL) {
-		Serial.println("obj is NULL");
-		return 0;
-	}
-	return obj->valueint;
-}
-
-float DataElement::getFloat(const char *key) {
-	aJsonObject* obj = aJson.getObjectItem(params, key);
-	if (obj == NULL) {
-		Serial.println("obj is NULL");
-		return 0;
-	}
-	return obj->valuefloat;
-}
-
-
-char *DataElement::toCharArray() {
-	return aJson.print(paJsonObj);
 }
 
 AzureIoTHub Azure;
