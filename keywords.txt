@@ -6,23 +6,23 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-AzureIoTHub	KEYWORD1
-DataElement	KEYWORD1
+Azure   	    KEYWORD1
+WiFi    	    KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-setValue 	KEYWORD2
-getString 	KEYWORD2
-getInt		KEYWORD2
-getFloat 	KEYWORD2
-connect 	KEYWORD2
-push		KEYWORD2
-loop		KEYWORD2
-begin		KEYWORD2
-
+push     	    KEYWORD2
+connect   	    KEYWORD2
+status		    KEYWORD2
+azureCallback 	KEYWORD2
+setCallback	    KEYWORD2
+setup		    KEYWORD2
+loop		    KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
+
+WL_CONNECTED    LITERAL1
